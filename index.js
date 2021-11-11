@@ -1,6 +1,6 @@
 require('dotenv').config();
 // Require the necessary discord.js classes
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
 
 // Create a new client instance
@@ -17,10 +17,15 @@ client.on('interactionCreate', async interaction => {
     const { commandName } = interaction;
 
     if (commandName === 'nhello') {
-        await interaction.reply('Hello world!');
+        const curTime = Date.now();
+        const result = new MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Hello World!')
+            .addField('Latency (ms):', (curTime - interaction.createdTimestamp).toString());
+        await interaction.reply(result);
     }
     else if (commandName === 'nserver') {
-        await interaction.reply('Server info.');
+        await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
     }
     else if (commandName === 'nuser') {
         await interaction.reply('User info.');
