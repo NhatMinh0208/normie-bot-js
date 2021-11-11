@@ -28,16 +28,16 @@ client.on('interactionCreate', async interaction => {
         const result = new MessageEmbed()
             .setColor('#ff0000')
             .setTitle('Server Info')
-            .addfield('Server name:', interaction.guild.name)
-            .addfield('Total members:', interaction.guild.memberCount.toString());
+            .addField('Server name:', interaction.guild.name)
+            .addField('Total members:', interaction.guild.memberCount.toString());
         await interaction.reply({ embeds: [result], ephemeral: false });
     }
     else if (commandName === 'nuser') {
         const result = new MessageEmbed()
             .setColor('#ff0000')
             .setTitle('User Info')
-            .addfield('Your tag:', interaction.user.tag)
-            .addfield('Your ID:', interaction.user.id);
+            .addField('Your tag:', interaction.user.tag)
+            .addField('Your ID:', interaction.user.id);
         await interaction.reply({ embeds: [result], ephemeral: false });
     }
 });
