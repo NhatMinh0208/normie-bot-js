@@ -1,0 +1,22 @@
+{
+  "name": "normie-bot-js",
+  "version": "0.0.1",
+  "description": "Normie's Discord bot - JS rewrite",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "js"
+  ],
+  "author": "normie28",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^13.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0"
+  }
+}
