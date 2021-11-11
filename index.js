@@ -25,10 +25,20 @@ client.on('interactionCreate', async interaction => {
         await interaction.reply({ embeds: [result], ephemeral: false });
     }
     else if (commandName === 'nserver') {
-        await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+        const result = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('Server Info')
+            .addfield('Server name:', interaction.guild.name)
+            .addfield('Total members:', interaction.guild.memberCount.toString());
+        await interaction.reply({ embeds: [result], ephemeral: false });
     }
     else if (commandName === 'nuser') {
-        await interaction.reply('User info.');
+        const result = new MessageEmbed()
+            .setColor('#ff0000')
+            .setTitle('User Info')
+            .addfield('Your tag:', interaction.user.tag)
+            .addfield('Your ID:', interaction.user.id);
+        await interaction.reply({ embeds: [result], ephemeral: false });
     }
 });
 
