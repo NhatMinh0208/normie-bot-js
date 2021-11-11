@@ -1,10 +1,22 @@
 require('dotenv').config();
+const fs = require('fs');
 // Require the necessary discord.js classes
-const { Client, Intents, MessageEmbed } = require('discord.js');
+
+const { Client, Intents, Collection } = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+client.commands = new Collection();
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	// Set a new item in the Collection
+	// With the key as the command name and the value as the exported module
+	client.commands.set(command.data.name, command);
+}
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
@@ -14,32 +26,17 @@ client.once('ready', () => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
-    const { commandName } = interaction;
+    const command = client.commands.get(interaction.commandName);
 
-    if (commandName === 'nhello') {
-        const curTime = Date.now();
-        const result = new MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Hello World!')
-            .addField('Latency (ms):', (curTime - interaction.createdTimestamp).toString());
-        await interaction.reply({ embeds: [result], ephemeral: false });
-    }
-    else if (commandName === 'nserver') {
-        const result = new MessageEmbed()
-            .setColor('#ff0000')
-            .setTitle('Server Info')
-            .addField('Server name:', interaction.guild.name)
-            .addField('Total members:', interaction.guild.memberCount.toString());
-        await interaction.reply({ embeds: [result], ephemeral: false });
-    }
-    else if (commandName === 'nuser') {
-        const result = new MessageEmbed()
-            .setColor('#ff0000')
-            .setTitle('User Info')
-            .addField('Your tag:', interaction.user.tag)
-            .addField('Your ID:', interaction.user.id);
-        await interaction.reply({ embeds: [result], ephemeral: false });
-    }
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	}
+    catch (error) {
+		console.error(error);
+		await interaction.reply({ content: '**Error**: Unknown', ephemeral: true });
+	}
 });
 
 // Login to Discord with your client's token

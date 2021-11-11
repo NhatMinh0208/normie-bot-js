@@ -1,18 +1,22 @@
 require('dotenv').config();
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const fs = require('fs');
+
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+
 const token = process.env.DISCORD_TOKEN;
-console.log(token);
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
 
-const commands = [
-	new SlashCommandBuilder().setName('nhello').setDescription('Replies with "Hello World!", as well as the current latency.'),
-	new SlashCommandBuilder().setName('nserver').setDescription('Replies with server info.'),
-	new SlashCommandBuilder().setName('nuser').setDescription('Replies with user info.'),
-]
-	.map(command => command.toJSON());
+let commands = [];
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	commands.push(command.data);
+}
+
+commands = commands.map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(token);
 
