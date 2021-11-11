@@ -22,7 +22,7 @@ client.on('interactionCreate', async interaction => {
             .setColor('#0099ff')
             .setTitle('Hello World!')
             .addField('Latency (ms):', (curTime - interaction.createdTimestamp).toString());
-        await interaction.reply({ embeds: [result], ephemeral: true });
+        await interaction.reply({ embeds: [result], ephemeral: false });
     }
     else if (commandName === 'nserver') {
         await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
