@@ -17,6 +17,7 @@ module.exports = {
             }, 5000);
         }
         if (message.channel.name == 'summoning-circle' && (!(findPingAny.test(message.content)))) {
+            console.log(message.content + 'deleted');
             await message.delete();
         }
 	},
