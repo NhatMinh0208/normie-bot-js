@@ -8,7 +8,11 @@ module.exports = {
         // console.log(message.content);
         // console.log(message.author.id);
         if (findPing.test(message.content)) {
-            await message.channel.send('How dare you ping me, <@!' + message.author.id + '>???');
+            const pingWarning = await message.channel.send('How dare you ping me, <@!' + message.author.id + '>???');
+            setTimeout(() => {
+                pingWarning.delete();
+                message.delete();
+            }, 5000);
         }
 	},
 };
