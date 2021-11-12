@@ -1,4 +1,5 @@
-const findPing = /<@!908363889492783104>/g;
+require('dotenv').config();
+const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
 
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
 	async execute(message) {
         // console.log(message.content);
         // console.log(message.author.id);
-        if (findPing.test(message.content)) {
+        if (findPingSelf.test(message.content)) {
             const pingWarning = await message.channel.send('How dare you ping me, <@!' + message.author.id + '>???');
             setTimeout(() => {
                 pingWarning.delete();
