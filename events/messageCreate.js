@@ -1,5 +1,6 @@
 require('dotenv').config();
 const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
+const findPingAny = new RegExp('<@!' + '*' + '>', 'g');
 
 
 module.exports = {
@@ -10,10 +11,13 @@ module.exports = {
         // console.log(message.author.id);
         if (findPingSelf.test(message.content)) {
             const pingWarning = await message.channel.send('How dare you ping me, <@!' + message.author.id + '>???');
-            setTimeout(() => {
-                pingWarning.delete();
-                message.delete();
+            setTimeout(async () => {
+                await pingWarning.delete();
+                await message.delete();
             }, 5000);
+        }
+        if (message.channel.name == 'summoning-circle' && (!(findPingAny.test(message.content)))) {
+            await message.delete();
         }
 	},
 };
