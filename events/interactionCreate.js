@@ -17,18 +17,22 @@ module.exports = {
 	async execute(interaction) {
 		console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 
-        if (!interaction.isCommand()) return;
+        if (interaction.isCommand()) {
+            const command = commands.get(interaction.commandName);
 
-        const command = commands.get(interaction.commandName);
+            if (!command) return;
 
-        if (!command) return;
-
-        try {
-            await command.execute(interaction);
+            try {
+                await command.execute(interaction);
+            }
+            catch (error) {
+                console.error(error);
+                await interaction.reply({ content: '**Error**: Unknown error', ephemeral: true });
+            }
         }
-        catch (error) {
-            console.error(error);
-            await interaction.reply({ content: '**Error**: Unknown error', ephemeral: true });
+
+        else {
+            return;
         }
 	},
 };
