@@ -1,6 +1,6 @@
 require('dotenv').config();
 const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
-const findPingAny = new RegExp('(<@![0-9]+> *)+', 'g');
+const findPingAny = new RegExp('^(<@![0-9]+> *)+$', 'g');
 
 
 module.exports = {
