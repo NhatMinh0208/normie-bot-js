@@ -12,13 +12,13 @@ module.exports = {
         if (findPingSelf.test(message.content)) {
             const pingWarning = await message.channel.send('How dare you ping me, <@!' + message.author.id + '>???');
             setTimeout(async () => {
-                if (!pingWarning.deleted()) await pingWarning.delete();
-                if (!message.deleted()) await message.delete();
+                if (!pingWarning.deleted) await pingWarning.delete();
+                if (!message.deleted) await message.delete();
             }, 5000);
         }
         if (message.channel.name == 'summoning-circle' && (!(findPingAny.test(message.content)))) {
             console.log(message.content + 'deleted');
-            if (!message.deleted()) await message.delete();
+            if (!message.deleted) await message.delete();
         }
 	},
 };
