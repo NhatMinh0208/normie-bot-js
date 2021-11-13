@@ -1,8 +1,11 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { Permissions } = require('discord.js');
+const { MessageActionRow, MessageButton } = require('discord.js');
 
 const namePattern = /[a-zA-Z][a-zA-Z0-9-]*/g;
+
+const waitDuration = 15;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -22,11 +25,22 @@ module.exports = {
             await interaction.reply({ content: '**Argument Error:** Argument [name] does not match regex ' + namePattern.source, ephemeral: true });
         }
         else {
-            const new_channel = await interaction.guild.channels.create(name, {
-                type: 'GUILD_TEXT',
+            // const new_channel = await interaction.guild.channels.create(name, {
+            //     type: 'GUILD_TEXT',
+            // });
+            // await new_channel.send('Channel **' + name + '** created!');
+            // await interaction.reply('Channel **' + name + '** created!');
+            const row = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('confirm')
+					.setLabel('Yes, create the channel!!!')
+					.setStyle('PRIMARY'),
+			);
+            await interaction.reply({
+                content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + 'seconds to proceed.',
+                components: [row],
             });
-            await new_channel.send('Channel **' + name + '** created!');
-            await interaction.reply('Channel **' + name + '** created!');
         }
 	},
 };
