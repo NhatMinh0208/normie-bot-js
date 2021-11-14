@@ -50,6 +50,7 @@ module.exports = {
                 });
                 await interaction.editReply({
                     content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
+                    components: [],
                 });
                 await new_channel.send('Channel **' + name + '** created!');
                 await i.reply('Channel **' + name + '** created!');
@@ -57,6 +58,7 @@ module.exports = {
             .catch(async () => {
                 await interaction.editReply({
                     content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
+                    components: [],
                 });
                 await interaction.followUp('Creation of channel **' + name + '** aborted due to confirmation timeout.');
             });
