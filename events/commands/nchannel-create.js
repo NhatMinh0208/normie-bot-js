@@ -48,10 +48,16 @@ module.exports = {
                 const new_channel = await interaction.guild.channels.create(name, {
                     type: 'GUILD_TEXT',
                 });
+                await interaction.editReply({
+                    content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
+                });
                 await new_channel.send('Channel **' + name + '** created!');
                 await i.reply('Channel **' + name + '** created!');
             })
             .catch(async () => {
+                await interaction.editReply({
+                    content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
+                });
                 await interaction.followUp('Creation of channel **' + name + '** aborted due to confirmation timeout.');
             });
         }
