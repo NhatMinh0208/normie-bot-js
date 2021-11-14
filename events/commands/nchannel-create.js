@@ -44,12 +44,12 @@ module.exports = {
 
             const filter = (i) => i.customId === 'confirm' && i.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: waitDuration * 1000 })
-            .then(async () => {
+            .then(async (i) => {
                 const new_channel = await interaction.guild.channels.create(name, {
                     type: 'GUILD_TEXT',
                 });
                 await new_channel.send('Channel **' + name + '** created!');
-                await interaction.followUp('Channel **' + name + '** created!');
+                await i.reply('Channel **' + name + '** created!');
             })
             .catch(async () => {
                 await interaction.followUp('Creation of channel **' + name + '** aborted due to confirmation timeout.');
