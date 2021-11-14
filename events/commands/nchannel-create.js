@@ -52,7 +52,7 @@ module.exports = {
                 await interaction.followUp('Channel **' + name + '** created!');
             })
             .catch(async () => {
-                await interaction.followUp('Craetion of channel **' + name + '** aborted due to confirmation timeout.');
+                await interaction.followUp('Creation of channel **' + name + '** aborted due to confirmation timeout.');
             });
         }
 	},
