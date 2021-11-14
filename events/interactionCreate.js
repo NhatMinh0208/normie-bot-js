@@ -30,7 +30,6 @@ module.exports = {
                 await interaction.reply({ content: '**Error**: Unknown error', ephemeral: true });
             }
         }
-
         else {
             return;
         }

@@ -34,12 +34,25 @@ module.exports = {
 			.addComponents(
 				new MessageButton()
 					.setCustomId('confirm')
-					.setLabel('Yes, create the channel!!!')
+					.setLabel('Yes, create the channel!')
 					.setStyle('PRIMARY'),
 			);
             await interaction.reply({
-                content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + 'seconds to proceed.',
+                content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
                 components: [row],
+            });
+
+            const filter = (i) => i.customId === 'confirm' && i.user.id === interaction.user.id;
+            interaction.channel.awaitMessageComponent({ filter, time: waitDuration * 1000 })
+            .then(async () => {
+                const new_channel = await interaction.guild.channels.create(name, {
+                    type: 'GUILD_TEXT',
+                });
+                await new_channel.send('Channel **' + name + '** created!');
+                await interaction.followUp('Channel **' + name + '** created!');
+            })
+            .catch(async () => {
+                await interaction.followUp('Craetion of channel **' + name + '** aborted due to confirmation timeout.');
             });
         }
 	},
