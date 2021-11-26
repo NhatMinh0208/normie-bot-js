@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 
 const { Permissions } = require('discord.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
@@ -7,8 +7,8 @@ const { MessageActionRow, MessageButton } = require('discord.js');
 const waitDuration = 15;
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('nchannel-delete')
+	data: new SlashCommandSubcommandBuilder()
+		.setName('delete')
 		.setDescription('Deletes the current text channel. Requires the permission [Manage Channels].'),
 	async execute(interaction) {
         const channel = interaction.channel;
@@ -29,6 +29,17 @@ module.exports = {
 					.setLabel('Delete the channel :(')
 					.setStyle('DANGER'),
 			);
+
+
+            const disabledRow = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('confirm')
+					.setLabel('Delete the channel :(')
+					.setStyle('DANGER')
+                    .setDisabled(true),
+			);
+
             await interaction.reply({
                 content: 'Are you sure you want to delete the text channel **' + channel.name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
                 components: [row],
@@ -41,7 +52,7 @@ module.exports = {
             })
             .catch(async () => {
                 await interaction.editReply({
-                    components: [],
+                    components: [disabledRow],
                 });
                 await interaction.followUp('Deletion of channel **' + channel.name + '** aborted due to confirmation timeout.');
             });

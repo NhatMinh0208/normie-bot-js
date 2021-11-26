@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 
 const { Permissions } = require('discord.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
@@ -8,8 +8,8 @@ const namePattern = /[a-zA-Z][a-zA-Z0-9-]*/g;
 const waitDuration = 15;
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('nchannel-create')
+	data: new SlashCommandSubcommandBuilder()
+		.setName('create')
 		.setDescription('Creates a new text channel. Requires the permission [Manage Channels].')
         .addStringOption(option =>
             option.setName('name')
@@ -30,6 +30,7 @@ module.exports = {
             // });
             // await new_channel.send('Channel **' + name + '** created!');
             // await interaction.reply('Channel **' + name + '** created!');
+
             const row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
@@ -37,6 +38,16 @@ module.exports = {
 					.setLabel('Yes, create the channel!')
 					.setStyle('PRIMARY'),
 			);
+
+            const disabledRow = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('confirm')
+					.setLabel('Yes, create the channel!')
+					.setStyle('PRIMARY')
+                    .setDisabled(true),
+			);
+
             await interaction.reply({
                 content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
                 components: [row],
@@ -50,7 +61,7 @@ module.exports = {
                 });
                 await interaction.editReply({
                     content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
-                    components: [],
+                    components: [disabledRow],
                 });
                 await new_channel.send('Channel **' + name + '** created!');
                 await i.reply('Channel **' + name + '** created!');
@@ -58,7 +69,7 @@ module.exports = {
             .catch(async () => {
                 await interaction.editReply({
                     content: 'Are you sure you want to create the text channel **' + name + '**? Click the button below within ' + waitDuration.toString() + ' seconds to proceed.',
-                    components: [],
+                    components: [disabledRow],
                 });
                 await interaction.followUp('Creation of channel **' + name + '** aborted due to confirmation timeout.');
             });

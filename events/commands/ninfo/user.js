@@ -1,10 +1,10 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('nuser')
-		.setDescription('Replies with user info.'),
+	data: new SlashCommandSubcommandBuilder()
+		.setName('user')
+		.setDescription('Replies with info of this user.'),
 	async execute(interaction) {
         const result = new MessageEmbed()
             .setColor('#ff0000')
