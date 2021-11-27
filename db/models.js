@@ -6,7 +6,7 @@ const memCellSchema = new mongoose.Schema({
     contents: String,
   });
 
-const memCell = mongoose.model('Kitten', memCellSchema);
+const memCell = mongoose.model('memCell', memCellSchema);
 
 async function connect() {
   await mongoose.connect(process.env['MONGO_URI']);
