@@ -11,7 +11,7 @@ async function updMemCell(loc, str) {
     await memCell.findOneAndUpdate({
         location: loc,
     }, newCell, {
-        new: true,
+        upsert: true,
     });
 }
 

@@ -27,7 +27,7 @@ module.exports = {
             }
             catch (error) {
                 console.error(error);
-                await interaction.reply({ content: '**Error**: Unknown error', ephemeral: true });
+                await interaction.reply({ content: '**Runtime Error**: ' + error.message, ephemeral: true });
             }
         }
         else {

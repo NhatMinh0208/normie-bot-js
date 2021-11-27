@@ -12,13 +12,8 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         console.log('Get recieved');
-        try {
-            const loc = interaction.options.get('location').value;
-            const res = await getMemCell(loc);
-            await interaction.reply('The string in the memory cell at the location ' + loc.toString() + ' is: ' + res);
-        }
-        catch (e) {
-            await interaction.reply({ content: '**Runtime Error:** ' + e.message, ephemeral: true });
-        }
+        const loc = interaction.options.get('location').value;
+        const res = await getMemCell(loc);
+        await interaction.reply('The string in the memory cell at the location ' + loc.toString() + ' is: ' + res);
 	},
 };
