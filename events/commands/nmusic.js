@@ -258,8 +258,8 @@ subcommand({query: ["str", "Insert url or name of song.", 1]}, "Play music :)", 
     await interaction.editReply("Playing :)");
 });
 
-subcommand({}, "Stop music :(", async function stop(interaction) {
-    await interaction.reply("Hi");
+subcommand({}, "Clears the queue.", async function clear(interaction) {
+    await interaction.reply({ content: 'This command has not been implemented yet. Please check back later.', ephemeral: true });
 });
 
 // Command handler
