@@ -17,7 +17,7 @@ async function queryVideo(q) {
         part: 'id,snippet',
         maxResults: 1,
         q: q,
-        auth: 'AIzaSyANH4jbqZNn0D2H0uyscQ2zOBpzlcQfrAU',
+        auth: process.env.GAPI_KEY,
     });
     console.log(result.data.items);
     return 'https://www.youtube.com/watch?v=' + result.data.items[0].id.videoId;
