@@ -61,8 +61,8 @@ module.exports = {
                 await interaction.editReply({
                     components: [disabledRow],
                 });
-                interaction.followUp('Deleting ' + num + ' messages...');
-                await channel.bulkDelete(num);
+                interaction.followUp('Deleted ' + num + ' messages.');
+                await channel.bulkDelete(num + 2);
             })
             .catch(async () => {
                 await interaction.editReply({
