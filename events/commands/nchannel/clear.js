@@ -9,7 +9,7 @@ const waitDuration = 15;
 module.exports = {
 	data: new SlashCommandSubcommandBuilder()
 		.setName('clear')
-		.setDescription('Deletes the last [num] messages in the current text channel. Requires the permission [Manage Channels].')
+		.setDescription('Deletes recent messages in the current text channel. Requires the permission [Manage Channels].')
         .addIntegerOption(option =>
             option.setName('num')
                 .setDescription('The number of messages to delete.')
