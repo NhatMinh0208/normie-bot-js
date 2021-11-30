@@ -4,10 +4,12 @@ const memCell = models.memCell;
 
 async function updMemCell(loc, str) {
     await models.connect();
-    const newCell = new memCell({
-        location: loc,
-        contents: str,
-    });
+    const newCell = {
+        $set: {
+            contents: str,
+        },
+    };
+    console.log(newCell);
     await memCell.findOneAndUpdate({
         location: loc,
     }, newCell, {

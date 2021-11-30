@@ -12,8 +12,9 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         console.log('Get recieved');
+        await interaction.deferReply();
         const loc = interaction.options.get('location').value;
         const res = await getMemCell(loc);
-        await interaction.reply('The string in the memory cell at the location ' + loc.toString() + ' is: ' + res);
+        await interaction.editReply('The string in the memory cell at the location ' + loc.toString() + ' is: ' + res);
 	},
 };

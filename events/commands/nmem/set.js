@@ -16,9 +16,11 @@ module.exports = {
                 .setRequired(true)),
 	async execute(interaction) {
         console.log('Set recieved');
+
+        await interaction.deferReply();
         const loc = interaction.options.get('location').value;
         const str = interaction.options.get('content').value;
         await updMemCell(loc, str);
-        await interaction.reply('The string in the memory cell at the location ' + loc.toString() + ' has been set to: ' + str);
+        await interaction.editReply('The string in the memory cell at the location ' + loc.toString() + ' has been set to: ' + str);
 	},
 };
