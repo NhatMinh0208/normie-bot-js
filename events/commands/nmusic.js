@@ -61,7 +61,7 @@ function nextQueue(id) {
 
 function nextQueueYeet(id) {
     let q = serverQueue.get(id);
-    if (q.queue.length == 0) return q.playing;
+    if (q.queue.length == 0) throw new Error('no more songs in queue.');
     
     let v = q.queue.shift();
     let cp = Object.assign({}, q.playing);
