@@ -19,7 +19,6 @@ const options = {
 const storage = new Storage(options);
 
 
-
 /**
  * TODO(developer): Uncomment these variables before running the sample.
  */

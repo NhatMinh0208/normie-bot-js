@@ -10,6 +10,8 @@ const ytpl = require('ytpl');
 const crypto = require('crypto');
 const { pipeline } = require('stream/promises');
 
+const { queryVideo } = require('../../api/google.js');
+
 // const { InteractionResponseType } = require('discord-api-types');
 
 // types = str, int, num, bool, user, channel, role, mention
@@ -111,6 +113,8 @@ subcommand({}, "Join voice channel", async function join(interaction) {
             adapterCreator: channel.guild.voiceAdapterCreator,
         });
     }
+
+    interaction.reply('Joined!');
 });
 
 subcommand({}, "Show queue", async function queue(interaction) {
@@ -148,7 +152,9 @@ async function getVideoInfo(url) {
 }
 
 subcommand({query: ["str", "Insert url or name of song.", 1]}, "Play music :)", async function play(interaction) {
-    const query = interaction.options.getString('query');
+    let query = interaction.options.getString('query');
+
+    query = await queryVideo(query);
 
     await interaction.deferReply();
 
