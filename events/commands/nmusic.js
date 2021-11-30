@@ -59,7 +59,22 @@ function nextQueue(id) {
     return q.playing;
 }
 
-subcommand({}, "Skip song", async function skip(interaction) {
+function nextQueueYeet(id) {
+    let q = serverQueue.get(id);
+    if (q.queue.length == 0) return q.playing;
+    
+    let v = q.queue.shift();
+    let cp = Object.assign({}, q.playing);
+    
+    // q.queue.push(cp);
+    q.playing = v;
+
+    console.log(v);
+    
+    return q.playing;
+}
+
+subcommand({}, "Skips the current song in the queue.", async function skip(interaction) {
     await interaction.deferReply();
     try {		
         let data = voiceData.get(interaction.guild.id);
@@ -71,7 +86,7 @@ subcommand({}, "Skip song", async function skip(interaction) {
     }
 });
 
-subcommand({}, "Pause music.", async function pause(interaction) {
+subcommand({}, "Pauses the music.", async function pause(interaction) {
     try {
         let data = voiceData.get(interaction.guild.id);
         data.player.pause();
@@ -82,7 +97,7 @@ subcommand({}, "Pause music.", async function pause(interaction) {
     }
 });
 
-subcommand({}, "Unpause music.", async function unpause(interaction) {
+subcommand({}, "Unpauses the music.", async function unpause(interaction) {
     try {
         let data = voiceData.get(interaction.guild.id);
         data.player.unpause();
@@ -117,7 +132,7 @@ subcommand({}, "Join voice channel", async function join(interaction) {
     interaction.reply('Joined!');
 });
 
-subcommand({}, "Show queue", async function queue(interaction) {
+subcommand({}, "Shows the current queue", async function queue(interaction) {
     let conn = getVoiceConnection(interaction.guild.id);
     if (!conn) {
         await interaction.reply("Queue empty :'(");
@@ -151,7 +166,7 @@ async function getVideoInfo(url) {
     });
 }
 
-subcommand({query: ["str", "Insert url or name of song.", 1]}, "Play music :)", async function play(interaction) {
+subcommand({query: ["str", "The name or URL of the song to add.", 1]}, "Adds the given song to the queue. Also starts the music.", async function play(interaction) {
     let query = interaction.options.getString('query');
 
     query = await queryVideo(query);
@@ -264,8 +279,16 @@ subcommand({query: ["str", "Insert url or name of song.", 1]}, "Play music :)", 
     await interaction.editReply("Playing :)");
 });
 
-subcommand({}, "Clears the queue.", async function clear(interaction) {
-    await interaction.reply({ content: 'This command has not been implemented yet. Please check back later.', ephemeral: true });
+subcommand({}, "Deletes the current song from the queue.", async function yeet(interaction) {
+    await interaction.deferReply();
+    try {		
+        let data = voiceData.get(interaction.guild.id);
+        data.player.play(createAudioResource(createYTDLStream(nextQueueYeet(interaction.guild.id).url)));
+        await interaction.editReply("Skipped.")
+    }
+    catch {
+       await interaction.editReply("Nothing to play..."); 
+    }
 });
 
 // Command handler
