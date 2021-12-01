@@ -2,6 +2,8 @@ const { google } = require('googleapis');
 
 const { GoogleAuth } = require('google-auth-library');
 
+const ytdl = require('ytdl-core');
+
 const serviceAccountAuth = new GoogleAuth({
     credentials: {
         client_email: process.env.GCLOUD_CLIENT_EMAIL,
@@ -19,10 +21,26 @@ async function queryVideo(q) {
         q: q,
         auth: process.env.GAPI_KEY,
     });
-    console.log(result.data.items);
-    return 'https://www.youtube.com/watch?v=' + result.data.items[0].id.videoId;
-}
+    const video = result.data.items[0];
+    const thumb = video.snippet.thumbnails.medium;
+    console.log(video);
+    console.log(thumb);
+    const additionalInfo = (await ytdl.getBasicInfo('https://www.youtube.com/watch?v=' + video.id.videoId)).videoDetails;
+    const publishTime = (((new Date(video.snippet.publishedAt)).getTime()) / 1000).toString();
+    const returnObj = {
+        url: 'https://www.youtube.com/watch?v=' + video.id.videoId,
+        thumb: thumb,
+        title: video.snippet.title,
+        author: video.snippet.channelTitle,
+        publishTime: publishTime,
+        mins: Math.floor((additionalInfo.lengthSeconds) / 60),
+        secs: (additionalInfo.lengthSeconds) % 60,
+        viewCount: additionalInfo.viewCount,
 
+    };
+    console.log(returnObj);
+    return returnObj;
+}
 
 module.exports = {
     queryVideo: queryVideo,

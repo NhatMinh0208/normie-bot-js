@@ -1,14 +1,11 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const ytdl = require('ytdl-core');
-const yt = require('youtube-dl-exec').raw
+const yt = require('youtube-dl-exec').raw;
 const { MessageEmbed } = require('discord.js');
-const { createReadStream } = require('fs');
-var fs = require('fs');
+
 const { AudioPlayerStatus, joinVoiceChannel, getVoiceConnection, createAudioPlayer, NoSubscriberBehavior, createAudioResource, demuxProbe, StreamType } = require('@discordjs/voice');
-var search = require('youtube-search');
-const ytpl = require('ytpl');
+
 const crypto = require('crypto');
-const { pipeline } = require('stream/promises');
 
 const { queryVideo } = require('../../api/google.js');
 
@@ -16,7 +13,7 @@ const { queryVideo } = require('../../api/google.js');
 
 // types = str, int, num, bool, user, channel, role, mention
 
-let subcommands = new Map();
+const subcommands = new Map();
 
 function subcommand(arguments, desc, target) {
     target.args = arguments;
@@ -41,15 +38,15 @@ function createYTDLStream(url) {
     return stream.stdout;
 }
 
-let voiceData = new Map();
-let serverQueue = new Map();
+const voiceData = new Map();
+const serverQueue = new Map();
 
 function nextQueue(id) {
-    let q = serverQueue.get(id);
+    const q = serverQueue.get(id);
     if (q.queue.length == 0) return q.playing;
     
-    let v = q.queue.shift();
-    let cp = Object.assign({}, q.playing);
+    const v = q.queue.shift();
+    const cp = Object.assign({}, q.playing);
     
     q.queue.push(cp);
     q.playing = v;
@@ -60,13 +57,11 @@ function nextQueue(id) {
 }
 
 function nextQueueYeet(id) {
-    let q = serverQueue.get(id);
-    if (q.queue.length == 0) throw new Error('no more songs in queue.');
+    const q = serverQueue.get(id);
+    if (q.queue.length == 0) throw new Error('No more songs in queue.');
     
-    let v = q.queue.shift();
-    let cp = Object.assign({}, q.playing);
+    const v = q.queue.shift();
     
-    // q.queue.push(cp);
     q.playing = v;
 
     console.log(v);
@@ -77,7 +72,7 @@ function nextQueueYeet(id) {
 subcommand({}, "Skips the current song in the queue.", async function skip(interaction) {
     await interaction.deferReply();
     try {		
-        let data = voiceData.get(interaction.guild.id);
+        const data = voiceData.get(interaction.guild.id);
         data.player.play(createAudioResource(createYTDLStream(nextQueue(interaction.guild.id).url)));
         await interaction.editReply("Skipped.")
     }
@@ -88,7 +83,7 @@ subcommand({}, "Skips the current song in the queue.", async function skip(inter
 
 subcommand({}, "Pauses the music.", async function pause(interaction) {
     try {
-        let data = voiceData.get(interaction.guild.id);
+        const data = voiceData.get(interaction.guild.id);
         data.player.pause();
         await interaction.reply("Paused.");
     }
@@ -99,7 +94,7 @@ subcommand({}, "Pauses the music.", async function pause(interaction) {
 
 subcommand({}, "Unpauses the music.", async function unpause(interaction) {
     try {
-        let data = voiceData.get(interaction.guild.id);
+        const data = voiceData.get(interaction.guild.id);
         data.player.unpause();
         await interaction.reply("Unpaused.");
     }
@@ -133,13 +128,13 @@ subcommand({}, "Join voice channel", async function join(interaction) {
 });
 
 subcommand({}, "Shows the current queue", async function queue(interaction) {
-    let conn = getVoiceConnection(interaction.guild.id);
+    const conn = getVoiceConnection(interaction.guild.id);
     if (!conn) {
         await interaction.reply("Queue empty :'(");
         return;
     }
 
-    let q = serverQueue.get(interaction.guild.id);
+    const q = serverQueue.get(interaction.guild.id);
     if (!q) {
         await interaction.reply("Queue empty :'(");
         return;
@@ -168,18 +163,18 @@ async function getVideoInfo(url) {
 
 subcommand({query: ["str", "The name or URL of the song to add.", 1]}, "Adds the given song to the queue.", async function play(interaction) {
     let query = interaction.options.getString('query');
-
-    query = await queryVideo(query);
+    const videoInfo = await queryVideo(query);
+    query = videoInfo.url;
 
     await interaction.deferReply();
 
-    var channel = interaction.member.voice.channel;
+    const channel = interaction.member.voice.channel;
     let data = voiceData.get(interaction.guild.id);
     console.log(data);
     if (!data) {
         data = {
             player: null,
-            voice_channel: channel
+            voice_channel: channel,
         };
         voiceData.set(interaction.guild.id, data);
     }
@@ -193,68 +188,18 @@ subcommand({query: ["str", "The name or URL of the song to add.", 1]}, "Adds the
         });
     }
 
-    var chk = false;
 
-    if (ytdl.validateURL(query)) {
-        chk = true;
-        var info = await getVideoInfo(query);
-        var title = info.videoDetails.title;
-        var length = info.videoDetails.lengthSeconds;
-        var mins = Math.floor(length / 60);
-        var secs = length % 60;
-
-        videoInfo = {
-            url: query,
-            title: title,
-            mins: mins,
-            secs: secs 
+    let qid = serverQueue.get(interaction.guild.id);
+    if (!qid) {
+        qid = {
+            playing: videoInfo,
+            queue: [],
         };
-
-        let qid = serverQueue.get(interaction.guild.id);
-        if (!qid) {
-            qid = {
-                playing: videoInfo,
-                queue: []
-            };
-            serverQueue.set(interaction.guild.id, qid);
-        }
-        else qid.queue.push(videoInfo);
+        serverQueue.set(interaction.guild.id, qid);
     }
-    else if (ytpl.validateID(query)) {
-        chk = true;
-        var playlist = await ytpl(query);
-        for (let i = 0; i < playlist.items.length; i++) {
-            let query = playlist.items[i].url;
-            var info = await getVideoInfo(query);
-            var title = info.videoDetails.title;
-            var length = info.videoDetails.lengthSeconds;
-            var mins = Math.floor(length / 60);
-            var secs = length % 60;
-
-            videoInfo = {
-                url: query,
-                title: title,
-                mins: mins,
-                secs: secs 
-            };
-
-            let qid = serverQueue.get(interaction.guild.id);
-            if (!qid) {
-                qid = {
-                    playing: videoInfo,
-                    queue: []
-                };
-                serverQueue.set(interaction.guild.id, qid);
-            }
-            else qid.queue.push(videoInfo);
-        }
+    else {
+        qid.queue.push(videoInfo);
     }
-
-    if (!chk) {
-        await interaction.editReply("Invalid URL :'(");
-        return;
-    }
-
     if (!data.player) {
         data.player = createAudioPlayer({
             behaviors: {
@@ -263,26 +208,58 @@ subcommand({query: ["str", "The name or URL of the song to add.", 1]}, "Adds the
         });
         data.player.on('error', error => {
             console.log(error);
-            var stream = createYTDLStream(nextQueue(interaction.guild.id).url);
+            let stream = createYTDLStream(nextQueue(interaction.guild.id).url);
             data.player.play(createAudioResource(stream));
         });
         data.player.on(AudioPlayerStatus.Idle, () => {
-            var stream = createYTDLStream(nextQueue(interaction.guild.id).url);
+            let stream = createYTDLStream(nextQueue(interaction.guild.id).url);
             data.player.play(createAudioResource(stream));
         });
         conn.subscribe(data.player);
         // setInterval(() => console.log(data), 4000);
-        var stream = await createYTDLStream(serverQueue.get(interaction.guild.id).playing.url);
+        let stream = await createYTDLStream(serverQueue.get(interaction.guild.id).playing.url);
         data.player.play(createAudioResource(stream));
-    } 
+    }
+    const videoEmbed = new MessageEmbed({
+        thumbnail: videoInfo.thumb,
+        title: videoInfo.title,
+        author: {
+            name: videoInfo.author,
+        },
+        url: videoInfo.url,
+        fields: [
+            {
+                name: 'Length',
+                value: videoInfo.mins + ':' + videoInfo.secs,
+                inline: true,
+            },
+            {
+                name: 'Publish date',
+                value: '<t:' + videoInfo.publishTime + ':D>',
+                inline: true,
+            },
+            {
+                name: 'View count',
+                value: (new Intl.NumberFormat('en-US')).format(videoInfo.viewCount),
+                inline: true,
+            },
+        ],
+    });
 
-    await interaction.editReply("Playing :)");
+    const replyMessage = {
+        content: '**Added to queue:**',
+        embeds: [videoEmbed],
+    };
+
+    console.log(replyMessage);
+
+    await interaction.editReply(replyMessage);
 });
 
 subcommand({}, "Deletes the current song from the queue.", async function yeet(interaction) {
     await interaction.deferReply();
     try {		
-        let data = voiceData.get(interaction.guild.id);
+        const data = voiceData.get(interaction.guild.id);
         data.player.play(createAudioResource(createYTDLStream(nextQueueYeet(interaction.guild.id).url)));
         await interaction.editReply("Skipped.")
     }
