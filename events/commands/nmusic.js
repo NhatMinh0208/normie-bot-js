@@ -160,7 +160,7 @@ async function getVideoInfo(url) {
         });
     });
 }
-
+//
 subcommand({query: ["str", "The name or URL of the song to add.", 1]}, "Adds the given song to the queue.", async function play(interaction) {
     let query = interaction.options.getString('query');
     const videoInfo = await queryVideo(query);
