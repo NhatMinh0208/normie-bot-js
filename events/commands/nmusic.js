@@ -141,9 +141,9 @@ subcommand({}, "Shows the current queue", async function queue(interaction) {
     }
 
     await interaction.deferReply();
-
-    var s = `Currently playing: **[${q.playing.title}](${q.playing.url})** | ${q.playing.mins}:${q.playing.secs}\n\n`;
-    q.queue.forEach(vid => s = s.concat(`**[${vid.title}](${vid.url})** | ${vid.mins}:${vid.secs}\n`));
+    console.log(q.playing);
+    var s = `Currently playing: **[${q.playing.title.replace(/\*/g, '\\*')}](${q.playing.url})** | ${q.playing.mins}:${q.playing.secs}\n\n`;
+    q.queue.forEach(vid => s = s.concat(`**[${vid.title.replace(/\*/g, '\\*')}](${vid.url})** | ${vid.mins}:${vid.secs}\n`));
 
     const embed = new MessageEmbed()
         .setColor("#0099ff")
