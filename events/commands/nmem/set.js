@@ -1,6 +1,6 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 
-const { updMemCell } = require('../../../db/ops.js');
+const { updMemCell } = require('../../../db/mem.js');
 
 module.exports = {
 	data: new SlashCommandSubcommandBuilder()

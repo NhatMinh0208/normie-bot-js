@@ -6,7 +6,14 @@ const memCellSchema = new mongoose.Schema({
     contents: String,
   });
 
+const roleSettingsSchema = new mongoose.Schema({
+  guildId: String,
+  roleId: String,
+  free: Boolean,
+});
+
 const memCell = mongoose.model('memCell', memCellSchema);
+const roleSettings = mongoose.model('roleSettings', roleSettingsSchema);
 
 async function connect() {
   await mongoose.connect(process.env['MONGO_URI']);
@@ -14,5 +21,6 @@ async function connect() {
 
 module.exports = {
     memCell: memCell,
+    roleSettings: roleSettings,
     connect: connect,
 };
