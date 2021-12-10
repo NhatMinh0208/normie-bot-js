@@ -13,6 +13,7 @@ module.exports = {
                 .setDescription('The role to grant to operate on.')
                 .setRequired(true)),
 	async execute(interaction) {
+        await interaction.deferReply();
         const role = interaction.options.getRole('role');
         const guildId = interaction.guildId;
         const guildName = interaction.guild.name;
