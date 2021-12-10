@@ -32,8 +32,19 @@ async function getFreeStatus(guildId, roleId) {
     }
 }
 
+async function getFreeRoleIds(guildId) {
+    await models.connect();
+    const result = await role.find({
+        guildId: guildId,
+        free: true,
+    });
+    // console.log('A');
+    // console.log(result);
+    return result.map(x => x.roleId);
+}
 
 module.exports = {
     setFreeStatus: setFreeStatus,
     getFreeStatus: getFreeStatus,
+    getFreeRoleIds: getFreeRoleIds,
 };
