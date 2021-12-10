@@ -10,7 +10,7 @@ module.exports = {
 		.setDescription('Changes the free status of a role. Requires [Manage Roles].')
         .addRoleOption(option =>
             option.setName('role')
-                .setDescription('The role to grant to operate on.')
+                .setDescription('The role to operate on.')
                 .setRequired(true))
         .addBooleanOption(option =>
             option.setName('newstatus')
