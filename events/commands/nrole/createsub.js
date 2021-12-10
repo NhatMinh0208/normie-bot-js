@@ -19,10 +19,10 @@ module.exports = {
         const guildName = interaction.guild.name;
         const guild = interaction.guild;
         if (!(await getFreeStatus(guildId, role.id))) {
-            await interaction.reply({ content: '**Argument Error:** The argument [role] is not set as a free role.', ephemeral: true });
+            await interaction.editReply('**Argument Error:** The argument [role] is not set as a free role.');
         }
         else {
-            const message = await interaction.reply({ content: 'Subscribe to the role **' + role.name + '** by reacting with :thumbsup: below!\
+            const message = await interaction.editReply({ content: 'Subscribe to the role **' + role.name + '** by reacting with :thumbsup: below!\
 \nUnsubscribe by un-reacting.\
 \nThis subscription message is valid for a day.', fetchReply: true });
             console.log(message);
