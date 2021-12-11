@@ -27,7 +27,10 @@ module.exports = {
             }
             catch (error) {
                 console.error(error);
-                if (interaction.deferred) {
+                if (interaction.replied) {
+                    await interaction.followUp({ content: '**Runtime Error**: ' + error.message, ephemeral: false });
+                }
+                else if (interaction.deferred) {
                     await interaction.editReply({ content: '**Runtime Error**: ' + error.message, ephemeral: true });
                 }
                 else {
