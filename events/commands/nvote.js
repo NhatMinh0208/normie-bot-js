@@ -136,7 +136,7 @@ module.exports = {
                     fields: resultFields,
                     color: [255, 255, 0],
                 };
-                await interaction.editReply({ content : 'This vote by **' + user.username + '** has closed!', embeds: [closembed] });
+                // await interaction.editReply({ content : 'This vote by **' + user.username + '** has closed!', embeds: [closembed] });
                 await interaction.followUp({ content: 'The results are in!', embeds: [resultembed] });
             });
 
