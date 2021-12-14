@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
+const { addVote } = require('../../../db/vote.js');
+const { closeVote } = require('./close.js');
 
 const dRegex = /^([0-9]*)d$/;
 const hRegex = /^([0-9]*)h$/;
@@ -57,12 +59,13 @@ module.exports = {
                 await interaction.reply({ content: '**Argument Error:** [duration] did not match required format', ephemeral: true });
             }
 
+            const endTime = Math.round((new Date()).getTime() / 1000 + durationSecs);
 
             const votembed = new MessageEmbed({
                 author: {
                     name: 'Vote initiated by ' + user.username,
                 },
-                description: 'Vote closes: <t:' + Math.round((new Date()).getTime() / 1000 + durationSecs).toString() + ':R>',
+                description: 'Vote closes: <t:' + endTime.toString() + ':R>',
                 title: question,
                 fields: options.map((x, id) => {
                     return {
@@ -77,57 +80,13 @@ module.exports = {
 
             const message = await interaction.fetchReply();
 
-            const filter = (reaction, us) => {
-                for (const id in options) {
-                    if (reaction.emoji.name == unicodeReactions[id]) return true;
-                }
-                return (us.id != process.env.CLIENT_ID);
-            };
-
-            message.awaitReactions({ filter, time: durationSecs * 1000 })
-            .then(async (reactionManager) => {
-                console.log(reactionManager);
-                const resultFields = [];
-                for (const id in options) {
-                    const x = options[id];
-                    const thisOptionUsers = await reactionManager.get(unicodeReactions[id]).users.fetch({ limit: 100 });
-                    console.log('A');
-                    console.log(thisOptionUsers);
-                    console.log(thisOptionUsers.size);
-                    console.log((thisOptionUsers.size - 1).toString());
-                    console.log('EA');
-                    const voterList = [];
-                    for (const [uid, voter] of thisOptionUsers) {
-                        console.log(uid);
-                        console.log(voter);
-                        if (voter.bot == false && voter.system == false) {
-                            voterList.push(voter.username);
-                        }
-                    }
-                    let voterString = voterList.join(', ');
-                    if (voterString == '') voterString = 'No one voted for this option!';
-                    const returnObj = {
-                        name: x + ': ' + (thisOptionUsers.size - 1).toString() + ((thisOptionUsers.size == 2) ? ' vote' : ' votes'),
-                        value: voterString,
-                    };
-                    resultFields.push(returnObj);
-                }
-                console.log(resultFields);
-                const resultembed = {
-                    author: {
-                        name: 'Result of vote initiated by ' + user.username,
-                    },
-                    title: question,
-                    fields: resultFields,
-                    color: [255, 255, 0],
-                };
-                // await interaction.editReply({ content : 'This vote by **' + user.username + '** has closed!', embeds: [closembed] });
-                await message.channel.send({ content: 'The results of a vote are in!', embeds: [resultembed] });
-            });
-
+            setTimeout(async () => closeVote(message.id), endTime * 1000 - (new Date()).getTime());
 
             for (const id in options) {
                 await message.react(unicodeReactions[id]);
             }
+
+            await addVote(user.username, question, optionsString, endTime, message.id, message.channel.id, message.guild.id);
+
         },
 };

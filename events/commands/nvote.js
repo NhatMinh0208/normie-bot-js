@@ -8,7 +8,8 @@ const subcommands = new Collection();
 const subcommandFiles = fs.readdirSync('./events/commands/nvote').filter(file => file.endsWith('.js'));
 
 const commandData = new SlashCommandBuilder()
-    .setName('nvote');
+    .setName('nvote')
+	.setDescription('Group of commands for creating managing votes.');
 
 for (const file of subcommandFiles) {
 	const subcommand = require(`./nvote/${file}`);

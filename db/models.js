@@ -17,7 +17,10 @@ const voteInfoSchema = new mongoose.Schema({
   question: String,
   options: String,
   endTime: Number,
+  closed: Boolean,
   messageId: String,
+  channelId: String,
+  guildId: String,
 });
 
 const memCell = mongoose.model('memCell', memCellSchema);
