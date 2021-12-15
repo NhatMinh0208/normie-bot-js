@@ -54,6 +54,7 @@ async function closeVote(messageId, closerId) {
         const resultembed = {
             author: {
                 name: 'Result of vote initiated by ' + author.username,
+                iconURL: author.displayAvatarURL(),
             },
             title: voteInfo.question,
             fields: resultFields,

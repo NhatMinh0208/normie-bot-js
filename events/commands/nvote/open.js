@@ -68,6 +68,7 @@ module.exports = {
             const votembed = new MessageEmbed({
                 author: {
                     name: 'Vote initiated by ' + user.username,
+                    iconURL: user.displayAvatarURL(),
                 },
                 description: 'Duration: **' + duration + '**\nVote closes: <t:' + Math.round(endTime / 1000).toString() + ':R>',
                 title: question,
