@@ -9,16 +9,21 @@ const { client } = require('../../../client.js');
 
 const unicodeReactions = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣'];
 
-async function closeVote(messageId) {
+async function closeVote(messageId, closerId) {
     const voteInfo = await findVoteById(messageId);
     if (voteInfo.closed) {
         throw new Error('This vote has already been closed!');
     }
+    else if (closerId != voteInfo.authorId && closerId != process.env.CLIENT_ID) {
+        throw new Error('You are not the author of this vote!');
+    }
     else {
+        const author = await client.users.fetch(voteInfo.authorId);
         const guild = await client.guilds.fetch(voteInfo.guildId);
         const channel = await guild.channels.fetch(voteInfo.channelId);
         const message = await channel.messages.fetch(voteInfo.messageId);
         const options = voteInfo.options.split('/');
+
 
         const resultFields = [];
         for (const id in options) {
@@ -48,14 +53,14 @@ async function closeVote(messageId) {
         console.log(resultFields);
         const resultembed = {
             author: {
-                name: 'Result of vote initiated by ' + voteInfo.author,
+                name: 'Result of vote initiated by ' + author.username,
             },
             title: voteInfo.question,
             fields: resultFields,
             color: [255, 255, 0],
         };
         // await interaction.editReply({ content : 'This vote by **' + user.username + '** has closed!', embeds: [closembed] });
-        await channel.send({ content: 'A vote initiated by **' + voteInfo.author + '** has closed, and the results are in!', embeds: [resultembed] });
+        await message.reply({ content: 'A vote initiated by **' + author.username + '** has closed, and the results are in!', embeds: [resultembed] });
 
     }
     await markClosed(messageId);
@@ -72,7 +77,7 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
         await interaction.reply('Your request to close has been sent.');
-        await closeVote(interaction.options.getString('id'));
+        await closeVote(interaction.options.getString('id'), interaction.user.id);
     },
 
     closeVote: closeVote,

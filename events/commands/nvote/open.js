@@ -58,14 +58,18 @@ module.exports = {
             else {
                 await interaction.reply({ content: '**Argument Error:** [duration] did not match required format', ephemeral: true });
             }
+            durationSecs *= 1000;
 
-            const endTime = Math.round((new Date()).getTime() / 1000 + durationSecs);
+            console.log(durationSecs);
+
+            const endTime = (new Date()).getTime() + durationSecs;
+            console.log(endTime);
 
             const votembed = new MessageEmbed({
                 author: {
                     name: 'Vote initiated by ' + user.username,
                 },
-                description: 'Vote closes: <t:' + endTime.toString() + ':R>',
+                description: 'Duration: **' + duration + '**\nVote closes: <t:' + Math.round(endTime / 1000).toString() + ':R>',
                 title: question,
                 fields: options.map((x, id) => {
                     return {
@@ -76,17 +80,18 @@ module.exports = {
                 color: [0, 255, 0],
             });
 
+
             await interaction.reply({ content : '**' + user.username + '** has initiated a vote!', embeds: [votembed] });
 
             const message = await interaction.fetchReply();
 
-            setTimeout(async () => closeVote(message.id), endTime * 1000 - (new Date()).getTime());
+            setTimeout(async () => closeVote(message.id, process.env.CLIENT_ID), endTime - (new Date()).getTime());
 
             for (const id in options) {
                 await message.react(unicodeReactions[id]);
             }
 
-            await addVote(user.username, question, optionsString, endTime, message.id, message.channel.id, message.guild.id);
+            await addVote(user.id, question, optionsString, endTime, message.id, message.channel.id, message.guild.id);
 
         },
 };

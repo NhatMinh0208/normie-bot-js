@@ -13,7 +13,7 @@ const roleSettingsSchema = new mongoose.Schema({
 });
 
 const voteInfoSchema = new mongoose.Schema({
-  author: String,
+  authorId: String,
   question: String,
   options: String,
   endTime: Number,

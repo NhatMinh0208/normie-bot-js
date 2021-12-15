@@ -5,7 +5,7 @@ const vote = models.voteInfo;
 async function addVote(author, desc, option, end, message, channel, guild) {
     await models.connect();
     const newVote = new vote({
-        author: author,
+        authorId: author,
         question: desc,
         options: option,
         endTime: end,
@@ -39,8 +39,16 @@ async function markClosed(message) {
     }, updater);
 }
 
+async function getNonClosedVotes() {
+    const res = await vote.find({
+        closed: false,
+    });
+    return res;
+}
+
 module.exports = {
     addVote: addVote,
     findVoteById: findVoteById,
     markClosed: markClosed,
+    getNonClosedVotes: getNonClosedVotes,
 };

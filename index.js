@@ -20,6 +20,7 @@ for (const file of eventFiles) {
 	}
 }
 
+
 // For more information on ways to initialize Storage, please see
 // https://googleapis.dev/nodejs/storage/latest/Storage.html
 
@@ -43,6 +44,29 @@ async function listBuckets() {
   }
 
 listBuckets().catch(console.error);
+
+async function connectDB() {
+    await require('./db/models').connect();
+    console.log('Connected to DB!');
+}
+
+connectDB().catch(console.error);
+
+
+async function processVotes() {
+  const voteList = await require('./db/vote').getNonClosedVotes();
+  for (const vote of voteList) {
+    const currentTime = (new Date()).getTime();
+    if (currentTime > vote.endTime) {
+      require('./events/commands/nvote/close').closeVote(vote.messageId, process.env.CLIENT_ID);
+    }
+    else {
+      setTimeout(() => {require('./events/commands/nvote/close').closeVote(vote.messageId, process.env.CLIENT_ID);}, vote.endTime - currentTime);
+    }
+  }
+}
+
+processVotes().catch(console.error);
 
 // Login to Discord with your client's token
 client.login(token);
