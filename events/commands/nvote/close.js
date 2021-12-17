@@ -39,7 +39,7 @@ async function closeVote(messageId, closerId) {
                 console.log(uid);
                 console.log(voter);
                 if (voter.bot == false && voter.system == false) {
-                    voterList.push(voter.username);
+                    voterList.push('<@' + voter.id + '>');
                 }
             }
             let voterString = voterList.join(', ');
@@ -61,7 +61,7 @@ async function closeVote(messageId, closerId) {
             color: [255, 255, 0],
         };
         // await interaction.editReply({ content : 'This vote by **' + user.username + '** has closed!', embeds: [closembed] });
-        await message.reply({ content: 'A vote initiated by **' + author.username + '** has closed, and the results are in!', embeds: [resultembed] });
+        await message.reply({ content: 'A vote initiated by **<@' + author.id + '>** has closed, and the results are in!', embeds: [resultembed] });
 
     }
     await markClosed(messageId);

@@ -82,7 +82,7 @@ module.exports = {
             });
 
 
-            await interaction.reply({ content : '**' + user.username + '** has initiated a vote!', embeds: [votembed] });
+            await interaction.reply({ content : '**<@' + user.id + '>** has initiated a vote!', embeds: [votembed] });
 
             const message = await interaction.fetchReply();
 
