@@ -1,7 +1,8 @@
 require('dotenv').config();
 const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
 const findPingAny = new RegExp('^ *(<@[!&]?[0-9]+> *)+$', 'g');
-
+const findPP = new RegExp('8D', 'g');
+const DANK_MEMER_ID = '270904126974590976';
 
 module.exports = {
 	name: 'messageCreate',
@@ -19,6 +20,11 @@ module.exports = {
         if (message.channel.name == 'summoning-circle' && (!(findPingAny.test(message.content)))) {
             console.log(message.content + 'deleted');
             if (!message.deleted) await message.delete();
+        }
+
+        if (message.author.id == DANK_MEMER_ID && message.embeds.length == 1 && findPP.test(message.embeds[0].description)) {
+            console.log(message.embeds[0]);
+            await message.pin();
         }
 	},
 };
