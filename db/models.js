@@ -23,9 +23,15 @@ const voteInfoSchema = new mongoose.Schema({
   guildId: String,
 });
 
+const userAssocSchema = new mongoose.Schema({
+  id: String,
+  cfHandle: String,
+});
+
 const memCell = mongoose.model('memCell', memCellSchema);
 const roleSettings = mongoose.model('roleSettings', roleSettingsSchema);
 const voteInfo = mongoose.model('voteInfo', voteInfoSchema);
+const userAssoc = mongoose.model('userAssoc', userAssocSchema);
 
 async function connect() {
   await mongoose.connect(process.env['MONGO_URI']);
@@ -37,4 +43,5 @@ module.exports = {
     roleSettings: roleSettings,
     voteInfo: voteInfo,
     connect: connect,
+    userAssoc: userAssoc,
 };
