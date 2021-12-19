@@ -16,7 +16,7 @@ async function ensureUserExists(id) {
     const user = await User.findOne({
         id: id,
     });
-    if (user.length === 0) {
+    if (user === null) {
         await addNewUser(id);
     }
 }
@@ -24,9 +24,13 @@ async function ensureUserExists(id) {
 async function checkHandleUsed(handle) {
     await models.connect();
     const user = await User.findOne({
-        handle: handle,
+        cfHandle: handle,
     });
-    return (user.handle === 1);
+    // console.log('S');
+    // console.log(user);
+    // console.log(user !== null);
+    // console.log('ES');
+    return (user !== null);
 }
 
 async function updateUserHandle(id, handle) {
@@ -34,7 +38,7 @@ async function updateUserHandle(id, handle) {
     await User.findOneAndUpdate({
         id: id,
     }, {
-        handle: handle,
+        cfHandle: handle,
     });
 }
 
