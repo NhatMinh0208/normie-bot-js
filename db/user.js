@@ -42,8 +42,16 @@ async function updateUserHandle(id, handle) {
     });
 }
 
+async function getUserInfo(id) {
+    const user = await User.findOne({
+        id: id,
+    });
+    return user;
+}
+
 module.exports = {
     ensureUserExists: ensureUserExists,
     checkHandleUsed: checkHandleUsed,
     updateUserHandle: updateUserHandle,
+    getUserInfo: getUserInfo,
 };
