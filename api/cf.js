@@ -37,9 +37,15 @@ async function getContestSubs(contestId, from = 1, count = 1, handle = '') {
     return result;
 }
 
+async function getUpcomingContests() {
+    const path = 'https://codeforces.com/api/contest.list';
+    const result = (await axios.get(path)).data.result;
+    return result.filter((a) => (a.phase !== 'FINISHED' && a.id != 1308 && a.id != 1309));
+}
 
 module.exports = {
     getUsers: getUsers,
     getRandomProblem: getRandomProblem,
     getContestSubs: getContestSubs,
+    getUpcomingContests: getUpcomingContests,
 };
