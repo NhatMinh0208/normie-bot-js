@@ -9,7 +9,7 @@ async function getUsers(handles) {
     }
     catch (e) {
         console.error(e);
-        return [];
+        return null;
     }
     // console.log(result);
 }
@@ -36,6 +36,7 @@ async function getContestSubs(contestId, from = 1, count = 1, handle = '') {
     console.log(result);
     return result;
 }
+
 
 module.exports = {
     getUsers: getUsers,

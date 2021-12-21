@@ -59,6 +59,10 @@ module.exports = {
         }
         // console.log(handle);
         const result = await getUsers([handle]);
+        if (result === null) {
+            await interaction.editReply('**Runtime Error:** User not found!');
+            return;
+        }
         const info = result[0];
         // console.log(info);
         const embed = new MessageEmbed({
