@@ -28,10 +28,17 @@ const userAssocSchema = new mongoose.Schema({
   cfHandle: String,
 });
 
+const galleryImageSchema = new mongoose.Schema({
+  imageId: String,
+  userId: String,
+  galName: String,
+});
+
 const memCell = mongoose.model('memCell', memCellSchema);
 const roleSettings = mongoose.model('roleSettings', roleSettingsSchema);
 const voteInfo = mongoose.model('voteInfo', voteInfoSchema);
 const userAssoc = mongoose.model('userAssoc', userAssocSchema);
+const galleryImage = mongoose.model('galleryImage', galleryImageSchema);
 
 async function connect() {
   await mongoose.connect(process.env['MONGO_URI']);
@@ -44,4 +51,5 @@ module.exports = {
     voteInfo: voteInfo,
     connect: connect,
     userAssoc: userAssoc,
+    galleryImage: galleryImage,
 };

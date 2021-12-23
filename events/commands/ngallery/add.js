@@ -1,6 +1,9 @@
 const { SlashCommandSubcommandBuilder } = require('@discordjs/builders');
 const imageR = /^image\//g;
 const Downloader = require('nodejs-file-downloader');
+const { upFile } = require('../../../file-store/storage.js');
+const { addImage } = require('../../../db/galleryImage.js');
+const { rm } = require('fs/promises');
 
 module.exports = {
 	data: new SlashCommandSubcommandBuilder()
@@ -27,7 +30,7 @@ module.exports = {
         const images = target.attachments.filter(a => imageR.test(a.contentType));
         // const images = target.attachments;
         console.log(images);
-        images.forEach(async (image, id) => {
+        await images.forEach(async (image, id) => {
             console.log(id);
             console.log(image);
             const down = new Downloader({
@@ -37,7 +40,10 @@ module.exports = {
                 fileName: id,
             });
             await (down.download());
+            await upFile('user-image-store', 'tmp/discord/' + id, id, image.contentType);
+            await addImage(id, interaction.user.id, name);
+            await rm('tmp/discord/' + id);
         });
-
+        await target.reply('Images added to gallery **' + name + '** successfully.');
 	},
 };
