@@ -38,7 +38,7 @@ const memCell = mongoose.model('memCell', memCellSchema);
 const roleSettings = mongoose.model('roleSettings', roleSettingsSchema);
 const voteInfo = mongoose.model('voteInfo', voteInfoSchema);
 const userAssoc = mongoose.model('userAssoc', userAssocSchema);
-const galleryImage = mongoose.model('galleryImage', galleryImageSchema);
+const galleryImage = mongoose.model('galleryImagev2', galleryImageSchema);
 
 async function connect() {
   await mongoose.connect(process.env['MONGO_URI']);

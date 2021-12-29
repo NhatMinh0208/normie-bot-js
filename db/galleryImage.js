@@ -5,7 +5,7 @@ const Image = models.galleryImage;
 async function addImage(id, uid, name) {
     await models.connect();
     const newImage = new Image({
-        id: id,
+        imageId: id,
         userId: uid,
         galName: name,
     });

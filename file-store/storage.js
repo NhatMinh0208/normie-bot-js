@@ -25,11 +25,28 @@ async function upFile(bucket, path, name, type) {
       contentType: type,
     },
   });
-  console.log('File ' + path + 'has been uploaded to ' + name + ' in bucket ' + bucket);
+  console.log('File ' + path + ' has been uploaded to ' + name + ' in bucket ' + bucket);
 }
+
+async function downFile(bucket, path, name) {
+  const ops = {
+    destination: path,
+  };
+  console.log('what');
+  try {
+    const a = await storage.bucket(bucket).file(name).download(ops);
+    console.log(a);
+  }
+  catch (e) {
+    console.error(e);
+  }
+  console.log('File ' + name + ' has been downloaded to ' + path + ' in bucket ' + bucket);
+}
+
 
 module.exports = {
   upFile: upFile,
+  downFile: downFile,
 };
 
 // /**
