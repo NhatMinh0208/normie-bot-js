@@ -1,6 +1,7 @@
 require('dotenv').config();
 const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
 const findPingAny = new RegExp('^ *(<@[!&]?[0-9]+> *)+$', 'g');
+const findBannedWord = new RegExp('cac|lon|penis|pp|dick|cock', 'g');
 const findPP = new RegExp('8D', 'g');
 const DANK_MEMER_ID = '270904126974590976';
 
@@ -25,6 +26,10 @@ module.exports = {
         if (message.author.id == DANK_MEMER_ID && message.embeds.length == 1 && findPP.test(message.embeds[0].description)) {
             console.log(message.embeds[0]);
             await message.pin();
+        }
+
+        if (findBannedWord.test(message.content)) {
+            message.member.timeout(10 * 1000, 'saying a banned word');
         }
 	},
 };
