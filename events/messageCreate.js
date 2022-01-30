@@ -1,7 +1,6 @@
 require('dotenv').config();
 const findPingSelf = new RegExp('<@!' + process.env.CLIENT_ID + '>', 'g');
 const findPingAny = new RegExp('^ *(<@[!&]?[0-9]+> *)+$', 'g');
-const findBannedWord = new RegExp('loz|penis|dick|cock|dit', 'g');
 const findPP = new RegExp('8D', 'g');
 const DANK_MEMER_ID = '270904126974590976';
 
@@ -25,7 +24,18 @@ module.exports = {
 
         if (message.author.id == DANK_MEMER_ID && message.embeds.length == 1 && findPP.test(message.embeds[0].description)) {
             console.log(message.embeds[0]);
-            await message.pin();
+            try {
+                await message.pin();
+            }
+            catch (e) {
+                console.log(e);
+            }
+            const channels = await message.guild.channels.fetch();
+            console.log(channels);
+            const ppChannel = channels.find(ch => (ch.name == '8d-board' && ch.isText()));
+            if (ppChannel) {
+                ppChannel.send({ content: '**New 8D in channel <#' + message.channel.id + '>**\nJump to message: ' + message.url, embeds: message.embeds });
+            }
         }
 
         // if (findBannedWord.test(message.content)) {
