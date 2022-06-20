@@ -42,6 +42,7 @@ module.exports = {
             const options = optionsString.split('/');
             if (options.length == 1 || options.length > 10) {
                 await interaction.reply({ content: '**Argument Error:** There should not be exactly 1 or >10 options in [options]', ephemeral: true });
+                return;
             }
             else if (duration.match(dRegex)) {
                 durationSecs = parseInt(duration.match(dRegex)[1]) * 86400;
@@ -57,6 +58,7 @@ module.exports = {
             }
             else {
                 await interaction.reply({ content: '**Argument Error:** [duration] did not match required format', ephemeral: true });
+                return;
             }
             durationSecs *= 1000;
 
